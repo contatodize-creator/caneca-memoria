@@ -13,13 +13,19 @@ export default function LoginPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
+  function destination() {
+    if (typeof window === "undefined") return "/painel";
+    const next = new URLSearchParams(window.location.search).get("next");
+    return next && next.startsWith("/") && !next.startsWith("//") ? next : "/painel";
+  }
+
   async function login(e: FormEvent) {
     e.preventDefault();
     setLoading(true); setError(""); setMessage("");
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
     if (error) return setError(error.message);
-    router.push("/painel");
+    router.push(destination());
     router.refresh();
   }
 
@@ -29,10 +35,10 @@ export default function LoginPage() {
     setLoading(false);
     if (error) return setError(error.message);
     if (data.session) {
-      router.push("/painel");
+      router.push(destination());
       router.refresh();
     } else {
-      setMessage("Cadastro criado. Confira seu e-mail para confirmar a conta e depois entre normalmente.");
+      setMessage("Cadastro criado. Confira seu e-mail para confirmar a conta e depois entre normalmente. Sua personalização continuará disponível ao retornar por este link.");
     }
   }
 
@@ -42,8 +48,8 @@ export default function LoginPage() {
       <div className="authWrap">
         <div className="formCard">
           <span className="eyebrow">área do cliente</span>
-          <h2 style={{marginTop: 14}}>Entre para gerenciar suas memórias</h2>
-          <p className="muted">Suas memórias e mídias ficam vinculadas à sua conta.</p>
+          <h2 style={{marginTop: 14}}>Entre para continuar sua personalização</h2>
+          <p className="muted">Sua conta permite editar a experiência digital depois sem trocar o QR Code.</p>
           <form className="authForm" onSubmit={login}>
             <label>E-mail
               <input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" />
