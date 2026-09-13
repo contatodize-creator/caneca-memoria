@@ -15,6 +15,7 @@ type Item = {
   personalization_mode: string | null;
   recipient: string | null;
   memory_slug: string | null;
+  public_code: string | null;
   production_status: string;
   created_at: string;
 };
@@ -73,6 +74,7 @@ export default function Producao() {
             <p className="small">Tema: {item.collection_slug || "—"} • {item.personalization_mode === "assistido" ? "Atendimento assistido" : "Cliente monta"}</p>
             {item.recipient && <p className="small">Presente para: {item.recipient}</p>}
             <div className="actions">
+              {item.public_code && <a className="button secondary" href={`/pedido/${item.public_code}`}>Abrir personalização</a>}
               {item.memory_slug ? <a className="button secondary" href={`/m/${item.memory_slug}`}>Testar QR</a> : <span className="small">QR ainda não gerado</span>}
             </div>
           </div>
