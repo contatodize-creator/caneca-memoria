@@ -1,5 +1,18 @@
 export type MediaType = "image" | "video" | "audio";
-export type Theme = "amor" | "familia" | "pet" | "aniversario" | "homenagem";
+export type Theme =
+  | "amor"
+  | "familia"
+  | "bebes"
+  | "pets"
+  | "fe"
+  | "futebol"
+  | "humor"
+  | "profissoes"
+  | "empresas"
+  | "aniversarios"
+  | "amizade"
+  | "lembrancas"
+  | "homenagem";
 
 export type Memory = {
   id: string;
