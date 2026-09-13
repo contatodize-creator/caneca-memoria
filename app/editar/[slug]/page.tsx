@@ -28,7 +28,9 @@ export default function Editar() {
   function update<K extends keyof Memory>(key: K, value: Memory[K]) { setMemory(prev => prev ? {...prev, [key]: value} : prev); }
 
   async function save(e: FormEvent) {
-    e.preventDefault(); setSaving(true); setError("");
+    e.preventDefault();
+    if (!memory) return;
+    setSaving(true); setError("");
     try {
       await updateMemory(slug, { title: memory.title, recipient: memory.recipient, sender: memory.sender, message: memory.message, mediaType: memory.mediaType, theme: memory.theme, active: memory.active, mediaUrl: externalUrl.trim() ? externalUrl.trim() : undefined });
       if (newFile) await replaceMedia(slug, newFile);
