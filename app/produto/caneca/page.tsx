@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import Nav from "../../../components/Nav";
 import { collections } from "../../../lib/catalog";
+import styles from "./page.module.css";
 
 export default function CanecaPage() {
   const [collection, setCollection] = useState("amor");
@@ -28,40 +29,40 @@ export default function CanecaPage() {
   return (
     <main>
       <Nav />
-      <div className="container productPage">
-        <section className="productHero">
-          <div className="productVisual">
-            <div className="productMug">
-              <div className="productMugPrint">
-                <span className="mugMiniLabel">{selectedCollection.title}</span>
+      <div className={`container ${styles.productPage}`}>
+        <section className={styles.productHero}>
+          <div className={styles.productVisual}>
+            <div className={styles.productMug}>
+              <div className={styles.productMugPrint}>
+                <span className={styles.mugMiniLabel}>{selectedCollection.title}</span>
                 <strong>Tem algo aqui para você.</strong>
-                <div className="mugQr">▦</div>
+                <div className={styles.mugQr}>▦</div>
                 <small>Escaneie e descubra</small>
               </div>
             </div>
-            <div className="productBadge">QR permanente • conteúdo editável</div>
+            <div className={styles.productBadge}>QR permanente • conteúdo editável</div>
           </div>
 
-          <div className="productInfo">
+          <div className={styles.productInfo}>
             <span className="eyebrow">primeiro produto da plataforma</span>
             <h1>Caneca Interativa</h1>
             <p className="lead">Uma caneca personalizada que guarda uma experiência digital: mensagem, foto, vídeo ou áudio acessados por um QR Code único.</p>
 
-            <div className="productHighlights">
+            <div className={styles.productHighlights}>
               <span>✓ QR único</span>
               <span>✓ Página personalizada</span>
               <span>✓ Editável depois</span>
               <span>✓ Opção de ajuda</span>
             </div>
 
-            <div className="configBlock">
-              <div className="configTitle">1. Escolha o tema da caneca</div>
-              <div className="themePicker">
+            <div className={styles.configBlock}>
+              <div className={styles.configTitle}>1. Escolha o tema da caneca</div>
+              <div className={styles.themePicker}>
                 {collections.map((item) => (
                   <button
                     type="button"
                     key={item.slug}
-                    className={collection === item.slug ? "themeChoice active" : "themeChoice"}
+                    className={`${styles.themeChoice} ${collection === item.slug ? styles.active : ""}`}
                     onClick={() => setCollection(item.slug)}
                   >
                     <span>{item.icon}</span>
@@ -71,22 +72,22 @@ export default function CanecaPage() {
               </div>
             </div>
 
-            <div className="configBlock">
-              <div className="configTitle">2. Como você quer personalizar?</div>
-              <div className="modeGrid">
-                <button type="button" className={mode === "sozinho" ? "modeCard active" : "modeCard"} onClick={() => setMode("sozinho")}>
+            <div className={styles.configBlock}>
+              <div className={styles.configTitle}>2. Como você quer personalizar?</div>
+              <div className={styles.modeGrid}>
+                <button type="button" className={`${styles.modeCard} ${mode === "sozinho" ? styles.active : ""}`} onClick={() => setMode("sozinho")}>
                   <strong>Eu mesmo vou montar</strong>
                   <span>Você envia mensagem, foto, vídeo ou áudio e cria sua página.</span>
                 </button>
-                <button type="button" className={mode === "assistido" ? "modeCard active" : "modeCard"} onClick={() => setMode("assistido")}>
+                <button type="button" className={`${styles.modeCard} ${mode === "assistido" ? styles.active : ""}`} onClick={() => setMode("assistido")}>
                   <strong>Quero que façam para mim</strong>
                   <span>Ideal para idosos, presentes especiais ou quem prefere ajuda.</span>
                 </button>
               </div>
             </div>
 
-            <div className="productSummary">
-              <div><span className="small muted">Sua escolha</span><strong>Caneca • {selectedCollection.title} • {mode === "sozinho" ? "Personalização própria" : "Atendimento assistido"}</strong></div>
+            <div className={styles.productSummary}>
+              <div><span className="small">Sua escolha</span><strong>Caneca • {selectedCollection.title} • {mode === "sozinho" ? "Personalização própria" : "Atendimento assistido"}</strong></div>
               <Link href={loginHref} className="button">Começar personalização</Link>
             </div>
           </div>
