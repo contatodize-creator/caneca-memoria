@@ -24,15 +24,16 @@ export default function Nav() {
   return (
     <nav className="nav container">
       <Link href="/" className="brand">
-        <span className="brandMark">M</span>
-        <span>Memória Interativa</span>
+        <span className="brandMark">C</span>
+        <span>CANEKIM</span>
       </Link>
       <div className="navlinks">
         <Link href="/colecoes">Coleções</Link>
         <Link href="/personalizar">Criar presente</Link>
         {logged ? (
           <>
-            <Link href="/painel">Minhas memórias</Link>
+            <Link href="/painel">Memórias</Link>
+            <Link href="/producao">Produção</Link>
             <button className="navTextButton" onClick={logout}>Sair</button>
           </>
         ) : (
