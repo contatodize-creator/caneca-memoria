@@ -24,7 +24,7 @@ export default function CollectionsPage() {
                 <div className="tagRow">
                   {collection.examples.map((item) => <span className="tag" key={item}>{item}</span>)}
                 </div>
-                <Link href={`/personalizar?colecao=${collection.slug}`} className="textLink">Criar nesta coleção →</Link>
+                <Link href={`/produto/caneca?colecao=${collection.slug}`} className="textLink">Ver caneca desta coleção →</Link>
               </article>
             ))}
           </div>
@@ -36,20 +36,26 @@ export default function CollectionsPage() {
           </div>
           <div className="productGrid">
             {physicalProducts.map((product) => (
-              <div className="physicalProduct" key={product.slug}>
-                <span className="physicalIcon">{product.icon}</span>
-                <strong>{product.title}</strong>
-                <span className={product.status === "available" ? "status available" : "status"}>
-                  {product.status === "available" ? "Disponível" : "Em breve"}
-                </span>
-              </div>
+              product.status === "available" ? (
+                <Link href="/produto/caneca" className="physicalProduct clickableProduct" key={product.slug}>
+                  <span className="physicalIcon">{product.icon}</span>
+                  <strong>{product.title}</strong>
+                  <span className="status available">Disponível</span>
+                </Link>
+              ) : (
+                <div className="physicalProduct" key={product.slug}>
+                  <span className="physicalIcon">{product.icon}</span>
+                  <strong>{product.title}</strong>
+                  <span className="status">Em breve</span>
+                </div>
+              )
             ))}
           </div>
         </section>
 
         <section className="ctaBand">
-          <div><span className="sectionKicker">Sua ideia não está aqui?</span><h2>Crie algo totalmente seu.</h2><p>Escolha o produto e monte a experiência com texto, fotos, vídeos, áudio e links.</p></div>
-          <Link href="/personalizar" className="button lightButton">Começar agora</Link>
+          <div><span className="sectionKicker">Sua ideia não está aqui?</span><h2>Crie algo totalmente seu.</h2><p>Comece pela caneca e monte a experiência com texto, fotos, vídeos e áudio.</p></div>
+          <Link href="/produto/caneca" className="button lightButton">Criar minha caneca</Link>
         </section>
       </div>
     </main>
