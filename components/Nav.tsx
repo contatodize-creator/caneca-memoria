@@ -23,16 +23,18 @@ export default function Nav() {
 
   return (
     <nav className="nav container">
-      <Link href="/" className="brand">Memória na Caneca</Link>
+      <Link href="/" className="brand">MEMORA</Link>
       <div className="navlinks">
+        <Link href="/planos">Planos</Link>
+        <Link href="/revender">Para negócios</Link>
         {logged ? (
           <>
-            <Link href="/painel">Minhas memórias</Link>
-            <Link href="/criar" className="button smallButton">Criar memória</Link>
+            <Link href="/painel">Meus QRs</Link>
+            <Link href="/criar" className="button smallButton">Criar QR</Link>
             <button className="navTextButton" onClick={logout}>Sair</button>
           </>
         ) : (
-          <Link href="/login" className="button smallButton">Entrar</Link>
+          <Link href="/login" className="button smallButton">Entrar grátis</Link>
         )}
       </div>
     </nav>
