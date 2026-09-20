@@ -1,14 +1,16 @@
 "use client";
 
+import styles from "./HeroExperience.module.css";
+
 export default function HeroExperience() {
   return (
-    <div className="heroPhotoCard">
+    <div className={styles.card}>
       <img
         src="/memora-hero-real.webp"
         alt="Caneca real com QR Code ao lado de um celular mostrando uma experiência digital"
-        className="heroPhoto"
+        className={styles.photo}
       />
-      <div className="heroPhotoLabel">
+      <div className={styles.label}>
         <strong>EXEMPLO DE APLICAÇÃO</strong>
         <span>Um QR conecta o produto físico à experiência digital.</span>
       </div>
