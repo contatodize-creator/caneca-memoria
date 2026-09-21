@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Memora | QR Codes que conectam o físico ao digital",
-  description: "Crie experiências digitais por QR Code para presentes, produtos personalizados, campanhas, eventos e marketing.",
+  title: "DizeCode | Todo produto tem algo a dizer",
+  description: "Crie experiências digitais por QR Code para presentes, produtos, campanhas, eventos, personalizados e marketing.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
