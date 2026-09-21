@@ -1,41 +1,4 @@
 "use client";
-
 import { QRCodeSVG } from "qrcode.react";
 import { useRef } from "react";
-
-export default function QrCard({ url, slug }: { url: string; slug: string }) {
-  const holder = useRef<HTMLDivElement>(null);
-
-  function downloadSvg() {
-    const svg = holder.current?.querySelector("svg");
-    if (!svg) return;
-    const xml = new XMLSerializer().serializeToString(svg);
-    const blob = new Blob([xml], { type: "image/svg+xml;charset=utf-8" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `qr-caneca-${slug}.svg`;
-    link.click();
-    URL.revokeObjectURL(link.href);
-  }
-
-  async function copy() {
-    await navigator.clipboard.writeText(url);
-    alert("Link copiado.");
-  }
-
-  return (
-    <div className="qrCard">
-      <div ref={holder} className="qrBox">
-        <QRCodeSVG value={url} size={180} level="H" includeMargin />
-      </div>
-      <div>
-        <strong>QR permanente da caneca</strong>
-        <p className="code">{url}</p>
-        <div className="actions">
-          <button className="button secondary" onClick={copy}>Copiar link</button>
-          <button className="button" onClick={downloadSvg}>Baixar QR em SVG</button>
-        </div>
-      </div>
-    </div>
-  );
-}
+export default function QrCard({url,slug}:{url:string;slug:string}){const holder=useRef<HTMLDivElement>(null);function downloadSvg(){const svg=holder.current?.querySelector("svg");if(!svg)return;const xml=new XMLSerializer().serializeToString(svg);const blob=new Blob([xml],{type:"image/svg+xml;charset=utf-8"});const link=document.createElement("a");link.href=URL.createObjectURL(blob);link.download=`dizecode-${slug}.svg`;link.click();URL.revokeObjectURL(link.href)}async function copy(){await navigator.clipboard.writeText(url);alert("Link copiado.")}return <div className="qrCard"><div ref={holder} className="qrBox"><QRCodeSVG value={url} size={180} level="H" includeMargin/></div><div><strong>Seu DizeCode permanente</strong><p className="code">{url}</p><p className="small">Use este QR em qualquer produto, presente, material impresso ou campanha.</p><div className="actions"><button className="button secondary" onClick={copy}>Copiar link</button><button className="button" onClick={downloadSvg}>Baixar QR em SVG</button></div></div></div>}
