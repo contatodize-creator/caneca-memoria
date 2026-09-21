@@ -32,6 +32,9 @@ async function mpGet(path: string) {
   const token = process.env.MERCADO_PAGO_ACCESS_TOKEN;
   if (!token) throw new Error("Mercado Pago não configurado");
   const r = await fetch(`https://api.mercadopago.com${path}`, { headers: { Authorization: `Bearer ${token}` }, cache: "no-store" });
+  // O simulador oficial envia IDs fictícios. Um recurso inexistente deve ser
+  // reconhecido pelo webhook sem liberar qualquer produto ou plano.
+  if (r.status === 404) return null;
   if (!r.ok) throw new Error(`Mercado Pago ${r.status}`);
   return r.json();
 }
@@ -68,6 +71,7 @@ export async function POST(req: NextRequest) {
 
     if (type === "payment") {
       const p = await mpGet(`/v1/payments/${encodeURIComponent(id)}`);
+      if (!p) return NextResponse.json({ ok: true });
       const ref = parseRef(p.external_reference);
       if (!ref || p.status !== "approved") return NextResponse.json({ ok: true });
       if (Math.abs(Number(p.transaction_amount) - PRICES[ref.product]) > 0.001 || String(p.currency_id) !== "BRL") return NextResponse.json({ ok: true });
@@ -77,6 +81,7 @@ export async function POST(req: NextRequest) {
 
     if (type === "subscription_preapproval" || type === "preapproval") {
       const s = await mpGet(`/preapproval/${encodeURIComponent(id)}`);
+      if (!s) return NextResponse.json({ ok: true });
       const ref = parseRef(s.external_reference);
       if (!ref || ref.product === "experience") return NextResponse.json({ ok: true });
       const amount = Number(s.auto_recurring?.transaction_amount);
