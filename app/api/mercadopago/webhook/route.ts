@@ -1,3 +1,4 @@
+import { createHmac, timingSafeEqual } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 
 const PRICES: Record<string, number> = { experience: 9.9, pro: 29.9, reseller: 89.9, business: 199 };
@@ -6,6 +7,25 @@ const PLAN: Record<string, string> = { pro: "pro", reseller: "reseller", busines
 function parseRef(ref?: string | null) {
   const m = /^memora:(experience|pro|reseller|business):([0-9a-f-]{36})$/i.exec(ref || "");
   return m ? { product: m[1].toLowerCase(), userId: m[2].toLowerCase() } : null;
+}
+
+function validSignature(req: NextRequest, dataId: string) {
+  const secret = process.env.MERCADO_PAGO_WEBHOOK_SECRET;
+  const signature = req.headers.get("x-signature");
+  const requestId = req.headers.get("x-request-id");
+  if (!secret || !signature || !requestId || !dataId) return false;
+  const parts = Object.fromEntries(signature.split(",").map(part => { const [k, ...v] = part.trim().split("="); return [k, v.join("=")]; }));
+  const ts = parts.ts;
+  const v1 = parts.v1;
+  if (!ts || !v1) return false;
+  const normalizedId = dataId.toLowerCase();
+  const manifest = `id:${normalizedId};request-id:${requestId};ts:${ts};`;
+  const expected = createHmac("sha256", secret).update(manifest).digest("hex");
+  try {
+    const a = Buffer.from(expected, "hex");
+    const b = Buffer.from(v1, "hex");
+    return a.length === b.length && timingSafeEqual(a, b);
+  } catch { return false; }
 }
 
 async function mpGet(path: string) {
@@ -25,7 +45,7 @@ async function supabase(path: string, init: RequestInit = {}) {
 
 async function activate(userId: string, product: string, providerId: string, periodEnd?: string | null) {
   if (product === "experience") {
-    const read = await supabase(`account_plans?user_id=eq.${userId}&select=user_id,premium_credits`);
+    const read = await supabase(`account_plans?user_id=eq.${userId}&select=user_id,plan,premium_credits`);
     if (!read.ok) throw new Error("Falha ao ler créditos");
     const rows = await read.json();
     const credits = Number(rows?.[0]?.premium_credits || 0) + 1;
@@ -44,13 +64,13 @@ export async function POST(req: NextRequest) {
     const type = String(body?.type || body?.topic || req.nextUrl.searchParams.get("type") || req.nextUrl.searchParams.get("topic") || "");
     const id = String(body?.data?.id || body?.id || req.nextUrl.searchParams.get("data.id") || req.nextUrl.searchParams.get("id") || "");
     if (!id) return NextResponse.json({ ok: true });
+    if (!validSignature(req, id)) return NextResponse.json({ error: "Assinatura inválida." }, { status: 401 });
 
     if (type === "payment") {
       const p = await mpGet(`/v1/payments/${encodeURIComponent(id)}`);
       const ref = parseRef(p.external_reference);
       if (!ref || p.status !== "approved") return NextResponse.json({ ok: true });
       if (Math.abs(Number(p.transaction_amount) - PRICES[ref.product]) > 0.001 || String(p.currency_id) !== "BRL") return NextResponse.json({ ok: true });
-      // Only the one-off Experiência+ is activated from payment notifications.
       if (ref.product === "experience") await activate(ref.userId, ref.product, String(p.id));
       return NextResponse.json({ ok: true });
     }
