@@ -1,4 +1,5 @@
 import "./globals.css";
+import "./tech.css";
 
 export const metadata = {
   title: "DizeCode | Todo produto tem algo a dizer",
