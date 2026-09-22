@@ -1,0 +1,2 @@
+/* video admin additions */
+.videoPlaceholder iframe,.videoPlaceholder video{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:cover}.videoAdmin{display:flex;gap:9px;align-items:center;flex-wrap:wrap;padding:12px 4px 0}.videoAdmin input{flex:1;min-width:230px;background:#0b1220;border-color:#243653;color:#fff}.videoAdmin small{width:100%;color:#71829e}.videoEdit{border:1px solid #2a4264;background:#0d1a2d;color:#8eb8ff;padding:9px 13px;border-radius:10px;font-weight:800;cursor:pointer}

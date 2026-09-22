@@ -1,5 +1,5 @@
 import "./globals.css";
-import "./tech.css";
+import "../components/video-admin.css";
 
 export const metadata = {
   title: "DizeCode | Todo produto tem algo a dizer",
