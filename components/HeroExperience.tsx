@@ -6,7 +6,7 @@ export default function HeroExperience() {
   return (
     <div className={styles.card}>
       <img
-        src="/memora-hero-real.webp"
+        src="/dizecode-pai-filho.png"
         alt="Caneca real com QR Code ao lado de um celular mostrando uma experiência digital"
         className={styles.photo}
       />
