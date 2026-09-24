@@ -1,4 +1,5 @@
 import "./globals.css";
+import "./layout-fix.css";
 import "../components/video-admin.css";
 
 export const metadata = {
