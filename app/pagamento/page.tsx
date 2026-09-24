@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Nav from "../../components/Nav";
+import { supabase } from "../../lib/supabase";
 
 export default function Pagamento() {
   const [state, setState] = useState<"checking" | "approved" | "pending" | "failure">("checking");
@@ -18,8 +19,6 @@ export default function Pagamento() {
     let cancelled = false;
     async function confirm() {
       try {
-        const { createClient } = await import("../../lib/supabase-browser");
-        const supabase = createClient();
         const { data } = await supabase.auth.getSession();
         const token = data.session?.access_token;
         if (!token) { if (!cancelled) setState("failure"); return; }
