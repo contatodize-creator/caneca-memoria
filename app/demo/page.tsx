@@ -1,4 +1,5 @@
 import Link from "next/link";
+import "./demo.css";
 
 export default function DemoPage(){
   return <main className="demoExperience">
