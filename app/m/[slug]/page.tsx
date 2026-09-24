@@ -15,13 +15,36 @@ export default function MemoryPage() {
     fetchPublicMemory(slug).then(setMemory).catch(()=>setMemory(null)).finally(()=>setChecked(true));
   }, [slug]);
 
-  if (!checked) return <main><div className="memoryPage"><div className="memoryHero"><p>Carregando sua surpresa...</p></div></div></main>;
-  if (!memory) return <main><div className="memoryPage"><div className="memoryHero"><h2>Essa memória não está disponível.</h2><p className="muted">Ela pode ter sido pausada, removida ou o QR pode estar incorreto.</p></div></div></main>;
+  if (!checked) return <main className="publicExperience"><div className="experienceShell"><div className="experienceCard experienceLoading"><p>Carregando sua experiência...</p></div></div></main>;
+  if (!memory) return <main className="publicExperience"><div className="experienceShell"><div className="experienceCard experienceLoading"><h2>Essa experiência não está disponível.</h2><p>Ela pode ter sido pausada, removida ou o QR pode estar incorreto.</p></div></div></main>;
 
   return (
-    <main><div className="memoryPage"><div className="memoryHero"><ThemeBadge theme={memory.theme} /><h1>{memory.title}</h1>{memory.recipient && <p>Para <strong>{memory.recipient}</strong></p>}{memory.sender && <p className="small">Com carinho, {memory.sender}</p>}</div>
-      {memory.mediaUrl && <div className="mediaFrame">{memory.mediaType === "image" && <img src={memory.mediaUrl} alt="Memória" />}{memory.mediaType === "video" && <video src={memory.mediaUrl} controls playsInline />}{memory.mediaType === "audio" && <audio src={memory.mediaUrl} controls />}</div>}
-      <div className="note"><strong>Uma mensagem para você</strong><p>{memory.message}</p></div>
-    </div></main>
+    <main className={`publicExperience experience-${memory.theme}`}>
+      <div className="experienceShell">
+        <article className="experienceCard">
+          <header className="experienceHeader">
+            <div className="experienceBrand">DIZECODE</div>
+            <ThemeBadge theme={memory.theme} />
+            <h1>{memory.title}</h1>
+            {(memory.recipient || memory.sender) && <div className="experiencePeople">
+              {memory.recipient && <span>Para <strong>{memory.recipient}</strong></span>}
+              {memory.sender && <span>De <strong>{memory.sender}</strong></span>}
+            </div>}
+          </header>
+
+          {memory.mediaUrl && <section className={`experienceMedia ${memory.mediaType}`}>
+            {memory.mediaType === "image" && <img src={memory.mediaUrl} alt={memory.title || "Imagem da experiência"} />}
+            {memory.mediaType === "video" && <video src={memory.mediaUrl} controls playsInline preload="metadata" />}
+            {memory.mediaType === "audio" && <div className="experienceAudio"><span className="experienceAudioIcon">♪</span><p>Uma mensagem em áudio para você</p><audio src={memory.mediaUrl} controls preload="metadata" /></div>}
+          </section>}
+
+          {memory.message && <section className="experienceMessage">
+            <span className="experienceMessageLabel">Uma mensagem para você</span>
+            <p>{memory.message}</p>
+          </section>}
+          <footer className="experienceFooter">Criado com DizeCode</footer>
+        </article>
+      </div>
+    </main>
   );
 }
