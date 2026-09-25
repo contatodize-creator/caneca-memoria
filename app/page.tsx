@@ -4,6 +4,7 @@ import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
 import Nav from "../components/Nav";
 import HeroExperience from "../components/HeroExperience";
+import HomeVideo from "../components/HomeVideo";
 
 const faqs = [
   ["Dá para trocar o conteúdo depois de imprimir o QR?", "Sim. O QR continua o mesmo e você atualiza a experiência digital pelo painel."],
@@ -30,6 +31,11 @@ export default function Home() {
     <section className="liveDemo" id="teste">
       <div className="liveDemoCopy"><span className="eyebrow">TESTE A DIZECODE AGORA</span><h2>Aponte a câmera do celular para este QR.</h2><p>Este é um QR real da DizeCode. Escaneie e veja como uma experiência pode aparecer para quem recebe o seu produto.</p><div className="liveDemoHints"><span>1. Abra a câmera</span><span>2. Aponte para o QR</span><span>3. Abra a experiência</span></div></div>
       <div className="liveQrCard"><div className="realQr"><QRCodeSVG value={demoUrl} size={210} level="H" marginSize={2}/></div><strong>DizeCode demonstrativo</strong><small>{demoUrl}</small><Link href={demoPath} className="textLink">Abrir neste dispositivo →</Link></div>
+    </section>
+
+    <section className="homeVideoSection">
+      <div className="homeSectionHeader"><span className="eyebrow">DA CANECA PARA O CELULAR</span><h2>Um presente que continua depois de ser entregue.</h2><p className="lead">Veja como o DizeCode transforma um produto físico em uma experiência que pode emocionar, surpreender e ser revivida pelo celular.</p></div>
+      <HomeVideo/>
     </section>
 
     <section className="productProof" id="exemplos"><div className="homeSectionHeader"><span className="eyebrow">VEJA O PRODUTO</span><h2>O QR está no produto. A experiência aparece no celular.</h2><p className="lead">A DizeCode conecta o que você vende ou presenteia a um conteúdo digital que continua editável.</p></div><div className="qrExampleGrid">{qrExamples.map((item,i)=><article className="qrExampleCard" key={item.title}><div className="qrExampleTop"><div className="fakeQr" aria-label="Representação de QR"><i/><i/><i/><span/></div><div className="qrArrow">→</div><div className="phonePreview"><div className="phoneNotch"/><div className="phoneIcon">{item.icon}</div><b>{item.title}</b><small>{item.type}</small><div className="phoneLine"/><div className="phoneLine short"/></div></div><h3>{item.title}</h3><p>{item.text}</p><span className="exampleLabel">Exemplo {i+1}</span></article>)}</div></section>
