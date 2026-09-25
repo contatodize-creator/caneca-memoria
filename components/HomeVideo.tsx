@@ -28,9 +28,11 @@ export default function HomeVideo(){
   },[]);
   const src=useMemo(()=>embedUrl(url),[url]);
   function save(){const next=draft.trim()||DEFAULT_VIDEO;window.localStorage.setItem(KEY,next);setUrl(next);setDraft(next);setEditing(false)}
-  return <div className="videoShell">
-    <div className="videoPlaceholder">
-      {src.match(/youtube|vimeo/) ? <iframe src={src} title="Vídeo DizeCode" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen/> : <video src={src} controls playsInline preload="metadata"/>}
+  const frameStyle={width:"100%",maxWidth:"820px",margin:"0 auto",borderRadius:"24px",overflow:"hidden",background:"#111",boxShadow:"0 18px 55px rgba(50,70,60,.12)"} as const;
+  const mediaStyle={display:"block",width:"100%",height:"auto",aspectRatio:"16 / 9",objectFit:"contain",background:"#111",border:0} as const;
+  return <div className="videoShell" style={{width:"100%",maxWidth:"820px",margin:"0 auto 72px"}}>
+    <div className="videoPlaceholder" style={frameStyle}>
+      {src.match(/youtube|vimeo/) ? <iframe style={mediaStyle} src={src} title="Vídeo DizeCode" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen/> : <video style={mediaStyle} src={src} controls playsInline preload="metadata"/>}
     </div>
     {logged&&<div className="videoAdmin">
       {!editing?<button className="videoEdit" onClick={()=>setEditing(true)}>Trocar vídeo</button>:<><input value={draft} onChange={e=>setDraft(e.target.value)} placeholder="Cole o link do YouTube, Vimeo ou vídeo..."/><button className="button" onClick={save}>Salvar vídeo</button><button className="button secondary" onClick={()=>{setDraft(url);setEditing(false)}}>Cancelar</button></>}
