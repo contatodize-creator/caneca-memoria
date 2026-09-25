@@ -18,24 +18,19 @@ async function getUser(req: NextRequest) {
   return r.json();
 }
 
-async function supabase(path: string, init: RequestInit = {}) {
+async function grantCredit(userId: string, paymentId: string) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) throw new Error("Supabase admin não configurado");
-  return fetch(`${url}/rest/v1/${path}`, {
-    ...init,
-    headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json", Prefer: "resolution=merge-duplicates,return=minimal", ...(init.headers || {}) },
+  const r = await fetch(`${url}/rest/v1/rpc/grant_experience_credit`, {
+    method: "POST",
+    headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ p_user_id: userId, p_provider_id: paymentId }),
   });
-}
-
-async function activate(userId: string, paymentId: string) {
-  const read = await supabase(`account_plans?user_id=eq.${userId}&select=user_id,plan,premium_credits`);
-  if (!read.ok) throw new Error("Falha ao ler créditos");
-  const rows = await read.json();
-  const credits = Number(rows?.[0]?.premium_credits || 0) + 1;
-  const write = await supabase("account_plans?on_conflict=user_id", { method: "POST", body: JSON.stringify({ user_id: userId, plan: rows?.[0]?.plan || "free", status: "active", premium_credits: credits, updated_at: new Date().toISOString() }) });
-  if (!write.ok) throw new Error("Falha ao liberar crédito");
-  console.info("payment_return_activated", { userId, paymentId });
+  if (!r.ok) throw new Error(`Falha ao liberar crédito (${r.status})`);
+  const granted = await r.json();
+  console.info("payment_return_activation", { userId, paymentId, granted });
+  return Boolean(granted);
 }
 
 export async function POST(req: NextRequest) {
@@ -53,8 +48,8 @@ export async function POST(req: NextRequest) {
     if (!ref || ref.userId !== String(user.id).toLowerCase()) return NextResponse.json({ error: "Este pagamento não pertence a esta conta." }, { status: 403 });
     if (payment.status !== "approved") return NextResponse.json({ status: String(payment.status || "pending") });
     if (Math.abs(Number(payment.transaction_amount) - PRICE) > 0.001 || String(payment.currency_id) !== "BRL") return NextResponse.json({ error: "Valor do pagamento não confere." }, { status: 400 });
-    await activate(ref.userId, String(payment.id));
-    return NextResponse.json({ status: "approved", activated: true });
+    const activated = await grantCredit(ref.userId, String(payment.id));
+    return NextResponse.json({ status: "approved", activated, alreadyActivated: !activated });
   } catch (e: any) {
     console.error("payment_confirm_error", e?.message || e);
     return NextResponse.json({ error: "Não foi possível confirmar o pagamento agora." }, { status: 500 });
