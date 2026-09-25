@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../lib/supabase";
 
 const KEY = "dizecode-home-video";
+const DEFAULT_VIDEO = "/Woman_opens_gift_and_smiles_20260924224939.mp4";
 
 function embedUrl(value:string){
   const v=value.trim();
@@ -16,20 +17,20 @@ function embedUrl(value:string){
 }
 
 export default function HomeVideo(){
-  const [url,setUrl]=useState("");
-  const [draft,setDraft]=useState("");
+  const [url,setUrl]=useState(DEFAULT_VIDEO);
+  const [draft,setDraft]=useState(DEFAULT_VIDEO);
   const [logged,setLogged]=useState(false);
   const [editing,setEditing]=useState(false);
   useEffect(()=>{
-    const saved=window.localStorage.getItem(KEY)||"";
+    const saved=window.localStorage.getItem(KEY)||DEFAULT_VIDEO;
     setUrl(saved); setDraft(saved);
     supabase.auth.getUser().then(({data})=>setLogged(!!data.user));
   },[]);
   const src=useMemo(()=>embedUrl(url),[url]);
-  function save(){window.localStorage.setItem(KEY,draft.trim());setUrl(draft.trim());setEditing(false)}
+  function save(){const next=draft.trim()||DEFAULT_VIDEO;window.localStorage.setItem(KEY,next);setUrl(next);setDraft(next);setEditing(false)}
   return <div className="videoShell">
     <div className="videoPlaceholder">
-      {src ? (src.match(/youtube|vimeo/) ? <iframe src={src} title="Vídeo DizeCode" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen/> : <video src={src} controls playsInline/>) : <><div className="play">▶</div><strong>Seu vídeo aparece aqui</strong><span>Tutorial • demonstração • propaganda<br/>YouTube, Vimeo ou link direto de vídeo</span></>}
+      {src.match(/youtube|vimeo/) ? <iframe src={src} title="Vídeo DizeCode" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen/> : <video src={src} controls playsInline preload="metadata"/>}
     </div>
     {logged&&<div className="videoAdmin">
       {!editing?<button className="videoEdit" onClick={()=>setEditing(true)}>Trocar vídeo</button>:<><input value={draft} onChange={e=>setDraft(e.target.value)} placeholder="Cole o link do YouTube, Vimeo ou vídeo..."/><button className="button" onClick={save}>Salvar vídeo</button><button className="button secondary" onClick={()=>{setDraft(url);setEditing(false)}}>Cancelar</button></>}
