@@ -30,12 +30,19 @@ export default function HomeVideo(){
   function save(){const next=draft.trim()||DEFAULT_VIDEO;window.localStorage.setItem(KEY,next);setUrl(next);setDraft(next);setEditing(false)}
   return <div className="dizeHomeVideo">
     <style jsx global>{`
-      .homeVideoSection{width:100%;padding:28px 0 72px!important;overflow:hidden!important}
-      .dizeHomeVideo{width:100%!important;max-width:760px!important;margin:0 auto!important;position:relative!important;inset:auto!important;transform:none!important}
-      .dizeHomeVideo .dizeVideoFrame{width:100%!important;max-width:760px!important;height:auto!important;aspect-ratio:16/9!important;margin:0 auto!important;overflow:hidden!important;border-radius:24px!important;background:#111!important;box-shadow:0 18px 55px rgba(50,70,60,.14)!important;position:relative!important;inset:auto!important;transform:none!important}
+      .homeVideoSection{width:100%;max-width:100%;padding:8px 0 72px!important;overflow:hidden!important}
+      .homeVideoSection .homeSectionHeader{max-width:100%!important;margin:0 0 24px!important}
+      .homeVideoSection .homeSectionHeader h2{max-width:760px!important;margin-top:14px!important;margin-bottom:12px!important}
+      .homeVideoSection .homeSectionHeader .lead{max-width:820px!important;margin-bottom:0!important}
+      .dizeHomeVideo{width:100%!important;max-width:100%!important;margin:0!important;position:relative!important;inset:auto!important;transform:none!important}
+      .dizeHomeVideo .dizeVideoFrame{width:100%!important;max-width:100%!important;height:auto!important;aspect-ratio:16/9!important;margin:0!important;overflow:hidden!important;border:1px solid #dde6df!important;border-radius:28px!important;background:#111!important;box-shadow:0 18px 55px rgba(50,70,60,.11)!important;position:relative!important;inset:auto!important;transform:none!important}
       .dizeHomeVideo .dizeVideoFrame video,.dizeHomeVideo .dizeVideoFrame iframe{display:block!important;position:static!important;inset:auto!important;transform:none!important;width:100%!important;max-width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;aspect-ratio:16/9!important;object-fit:contain!important;background:#111!important;border:0!important;margin:0!important}
       .dizeHomeVideo .videoAdmin{margin-top:12px!important}
-      @media(max-width:800px){.dizeHomeVideo{max-width:94vw!important}.dizeHomeVideo .dizeVideoFrame{max-width:94vw!important;border-radius:18px!important}}
+      @media(max-width:800px){
+        .homeVideoSection{padding:0 0 52px!important}
+        .homeVideoSection .homeSectionHeader{margin-bottom:18px!important}
+        .dizeHomeVideo .dizeVideoFrame{border-radius:20px!important}
+      }
     `}</style>
     <div className="dizeVideoFrame">
       {src.match(/youtube|vimeo/) ? <iframe src={src} title="Vídeo DizeCode" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen/> : <video src={src} controls playsInline preload="metadata"/>}
