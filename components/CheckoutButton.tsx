@@ -2,9 +2,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabase";
-type Product="experience"|"pro"|"reseller"|"business";
-export default function CheckoutButton({product,label,featured=false}:{product:Product;label:string;featured?:boolean}){
+type Product="experience"|"pro"|"reseller"|"business";type BillingCycle="monthly"|"annual";
+export default function CheckoutButton({product,label,featured=false,billingCycle="monthly"}:{product:Product;label:string;featured?:boolean;billingCycle?:BillingCycle}){
  const router=useRouter();const[loading,setLoading]=useState(false);const[error,setError]=useState("");
- async function checkout(){setLoading(true);setError("");const{data:{session}}=await supabase.auth.getSession();if(!session){router.push(`/login?next=/planos`);return}try{const res=await fetch("/api/checkout",{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${session.access_token}`},body:JSON.stringify({product})});const data=await res.json();if(!res.ok||!data.url)throw new Error(data.error||"Falha ao iniciar pagamento");window.location.assign(data.url)}catch(e:any){setError(e.message||"Não foi possível abrir o pagamento.");setLoading(false)}}
+ async function checkout(){setLoading(true);setError("");const{data:{session}}=await supabase.auth.getSession();if(!session){router.push(`/login?next=/planos`);return}try{const res=await fetch("/api/checkout",{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${session.access_token}`},body:JSON.stringify({product,billingCycle})});const data=await res.json();if(!res.ok||!data.url)throw new Error(data.error||"Falha ao iniciar pagamento");window.location.assign(data.url)}catch(e:any){setError(e.message||"Não foi possível abrir o pagamento.");setLoading(false)}}
  return <><button className={`button ${featured?"":"secondary"}`} onClick={checkout} disabled={loading}>{loading?"Abrindo Mercado Pago...":label}</button>{product!=="experience"&&<p className="small muted" style={{marginTop:8}}>Escolha a forma de pagamento no Mercado Pago.</p>}{error&&<p className="small" style={{color:"#8b2f24",marginTop:8}}>{error}</p>}</>
 }
